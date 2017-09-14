@@ -7,6 +7,7 @@ import './App.css'
 
 class BooksApp extends Component {
   state = {
+    books: [],
     currentlyReading: [],
     wantToRead: [],
     read: []
@@ -15,7 +16,7 @@ class BooksApp extends Component {
   componentDidMount() {
     this.updateBooks()
   }
-
+  
   updateBooks = () => {
     let currentlyReading = [],
         wantToRead =  [],
@@ -31,9 +32,10 @@ class BooksApp extends Component {
         }
       })
       this.setState({
-        currentlyReading: currentlyReading,
-        wantToRead: wantToRead,
-        read: read
+        books,
+        currentlyReading,
+        wantToRead,
+        read
       })
     })
   }
@@ -59,7 +61,7 @@ class BooksApp extends Component {
           </div>  
         )}/>
         <Route path="/search" render={({ history }) => (
-          <SearchPage onUpdate={this.updateBooks}/>
+          <SearchPage books={this.state.books} onUpdate={this.updateBooks}/>
         )}/>
       </div>
     )

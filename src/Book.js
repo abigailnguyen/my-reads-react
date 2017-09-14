@@ -9,7 +9,15 @@ class Book extends Component {
     }
 
     state = {
-        shelf: this.props.book.shelf ? this.props.book.shelf : "none"
+        shelf:""
+    }
+    
+    componentDidMount() {
+       if (!this.state.shelf) {
+            BooksAPI.get(this.props.book.id).then(book => {
+                this.setState({ shelf: book.shelf })
+            })
+       } 
     }
 
     updateToShelf = (book, shelf) => {
