@@ -11,13 +11,23 @@ class Book extends Component {
     state = {
         shelf:""
     }
-    
+
     componentDidMount() {
-       if (!this.state.shelf) {
+        this.update=true
+    }
+
+    componentWillUnmount() {
+        this.update=false
+    }   
+
+    getShelfPromise = () => {
+        if (!this.state.shelf) {
             BooksAPI.get(this.props.book.id).then(book => {
-                this.setState({ shelf: book.shelf })
+                if(this.update) { 
+                    this.setState({ shelf: book.shelf }) 
+                } 
             })
-       } 
+        }
     }
 
     updateToShelf = (book, shelf) => {

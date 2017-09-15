@@ -13,13 +13,15 @@ class SearchPage extends Component {
         var query = event.target.value.trim() 
         if (query) {
             BooksAPI.search(query, 10).then(searchResults => {
-                this.setState({
-                    error: "", 
-                    searchResults
-                })
+                if (!searchResults.error) {
+                    this.setState({
+                        error: "", 
+                        searchResults
+                    })  
+                } else {
+                    this.setState({ error: "No books found." })
+                }
             })
-        } else {
-            this.setState({ error: "No books found." })
         }
     }
 
@@ -54,8 +56,8 @@ class SearchPage extends Component {
                                     <li key={book.id}>
                                         <Book book={book} onUpdate={onUpdate}/>
                                     </li>)
-                                }) 
-                            )                          
+                                })
+                            )                      
                         }
                     </ol>
                 </div>
