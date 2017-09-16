@@ -9,42 +9,46 @@ class Book extends Component {
     }
 
     state = {
-        shelf:""
+        shelf: this.props.book.shelf
     }
 
-    componentDidMount() {
-        this.update=true
-    }
-
-    componentWillUnmount() {
-        this.update=false
-    }   
-
-    getShelfPromise = () => {
+    componentWillMount() {  
+        this.update = true
         if (!this.state.shelf) {
             BooksAPI.get(this.props.book.id).then(book => {
-                if(this.update) { 
-                    this.setState({ shelf: book.shelf }) 
-                } 
+                this.setShelf(book.shelf)
             })
         }
     }
 
+    componentWillUnmount() {
+        this.update = false
+    }   
+
+    setShelf = (shelf) => {
+        if(this.update) { 
+            this.setState({ shelf: shelf }) 
+        }
+    }
+
     updateToShelf = (book, shelf) => {
-        BooksAPI.update(book, shelf).then(response => {
-            console.log(response)
-        }).then(() => {
-            this.setState({ shelf: shelf })
-            this.props.onUpdate()
-        })
+        if (book.shelf !== shelf) {
+            BooksAPI.update(book, shelf).then(response => {
+                console.log(response)   
+            }).then(() => {
+                this.setShelf(shelf)
+                this.props.onUpdate()
+            })
+        }
     }
     
     render() {
         const { book } = this.props
+        book.shelf = this.state.shelf
         return (
             <div className="book">
                 <div className="book-top">
-                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
+                    <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks && book.imageLinks.smallThumbnail})` }}></div>
                     <div className="book-shelf-changer">
                         <select value={this.state.shelf} 
                                 onChange={event => {  
